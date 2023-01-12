@@ -31,12 +31,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(BlogUsersController.class)
 class BlogUsersControllerTest {
+    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
     @Autowired
     private MockMvc mvc;
-
     @MockBean
     private BlogUserService userService;
-
     @Autowired
     private BlogUserToDto userToDto;
 
@@ -106,7 +105,6 @@ class BlogUsersControllerTest {
 
         BlogUserDTO userDTO = userToDto.convert(user);
 
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONObject jsonObject = new JSONObject(ow.writeValueAsString(userDTO));
 
         // starting test
@@ -144,7 +142,6 @@ class BlogUsersControllerTest {
         given(userService.getUserById(1)).willReturn(userDTO);
         given(userService.updateUser(updatedUserDTO, 1)).willReturn(updatedUserDTO);
 
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONObject jsonObject = new JSONObject(ow.writeValueAsString(updatedUserDTO));
 
         MockHttpServletRequestBuilder builder =
@@ -168,6 +165,80 @@ class BlogUsersControllerTest {
         mvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("message", is("User deleted successfully")));
+    }
+
+    @Test
+    void givenInvalidUserName_whenCreateUser_thenBadRequest() throws Exception {
+        BlogUser invalidUser = new BlogUser();
+        invalidUser.setId(1);
+        invalidUser.setName(""); // passing blank name
+        invalidUser.setEmail("testuser@email.com");
+        invalidUser.setPassword("testuserpassword");
+        invalidUser.setAbout("userabout");
+
+        BlogUserDTO invalidUserDTO = userToDto.convert(invalidUser);
+
+        JSONObject jsonObject = new JSONObject(ow.writeValueAsString(invalidUserDTO));
+        // starting test
+        MockHttpServletRequestBuilder builder =
+                MockMvcRequestBuilders.post("/blogusers").
+                        contentType(MediaType.APPLICATION_JSON).
+                        content(jsonObject.toString());
+
+        mvc.perform(builder)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("success", is(false)))
+                .andExpect(jsonPath("count", is(1)))
+                .andExpect(jsonPath("errors.name", is("Name must not be blank")));
+    }
+
+    @Test
+    void givenInvalidUserEmail_whenCreateUser_thenBadRequest() throws Exception {
+        BlogUser invalidUser = new BlogUser();
+        invalidUser.setId(1);
+        invalidUser.setName("validname");
+        invalidUser.setEmail("invalidemail");
+        invalidUser.setPassword("testuserpassword");
+        invalidUser.setAbout("userabout");
+        BlogUserDTO invalidUserDTO = userToDto.convert(invalidUser);
+
+        JSONObject jsonObject = new JSONObject(ow.writeValueAsString(invalidUserDTO));
+        // starting test
+        MockHttpServletRequestBuilder builder =
+                MockMvcRequestBuilders.post("/blogusers").
+                        contentType(MediaType.APPLICATION_JSON).
+                        content(jsonObject.toString());
+
+        mvc.perform(builder)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("success", is(false)))
+                .andExpect(jsonPath("count", is(1)))
+                .andExpect(jsonPath("errors.email", is("Please enter a valid email")));
+    }
+
+    @Test
+    void givenInvalidUserPassword_whenCreateUser_thenBadRequest() throws Exception {
+        BlogUser invalidUser = new BlogUser();
+        invalidUser.setId(1);
+        invalidUser.setName("validname");
+        invalidUser.setEmail("username@email.com");
+        invalidUser.setPassword("passwor");
+        invalidUser.setAbout("userabout");
+        BlogUserDTO invalidUserDTO = userToDto.convert(invalidUser);
+
+        JSONObject jsonObject = new JSONObject(ow.writeValueAsString(invalidUserDTO));
+        // starting test
+        MockHttpServletRequestBuilder builder =
+                MockMvcRequestBuilders.post("/blogusers").
+                        contentType(MediaType.APPLICATION_JSON).
+                        content(jsonObject.toString());
+
+        String expectedMessage="Password length must be 8-16 characters and can include letter, numbers and _";
+        mvc.perform(builder)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("success", is(false)))
+                .andExpect(jsonPath("count", is(1)))
+                .andExpect(jsonPath("errors.password", is(expectedMessage)));
     }
 
 }
