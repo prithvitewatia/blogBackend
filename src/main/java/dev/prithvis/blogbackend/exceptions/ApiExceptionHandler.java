@@ -15,11 +15,12 @@ import java.util.Map;
 @RestControllerAdvice
 public class ApiExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleEntityNotFound(Exception exception, WebRequest webRequest) {
-        return new ResponseEntity<>(Map.of(
-                "message", exception.getMessage(),
-                "path", ((ServletWebRequest) webRequest).getRequest().getRequestURI(),
-                "success", "false"),
+    public ResponseEntity<Map<String, Object>> handleEntityNotFound(EntityNotFoundException exception,
+                                                                    WebRequest webRequest) {
+        Map<String,Object> errorsMap=Map.of("message", exception.getMessage(),
+                "path",((ServletWebRequest) webRequest).getRequest().getRequestURI(),
+                "success",false);
+        return new ResponseEntity<>(errorsMap,
                 HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
