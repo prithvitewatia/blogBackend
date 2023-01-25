@@ -1,4 +1,4 @@
-package dev.prithvis.blogbackend.service.repo;
+package dev.prithvis.blogbackend.service.base;
 
 import dev.prithvis.blogbackend.payloads.BlogUserDTO;
 import org.springframework.data.domain.Page;

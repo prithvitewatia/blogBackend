@@ -1,7 +1,7 @@
 package dev.prithvis.blogbackend.controller;
 
 import dev.prithvis.blogbackend.payloads.CategoryDTO;
-import dev.prithvis.blogbackend.service.repo.CategoryService;
+import dev.prithvis.blogbackend.service.base.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

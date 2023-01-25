@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import dev.prithvis.blogbackend.exceptions.EntityNotFoundException;
 import dev.prithvis.blogbackend.payloads.CategoryDTO;
-import dev.prithvis.blogbackend.service.repo.CategoryService;
+import dev.prithvis.blogbackend.service.base.CategoryService;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
