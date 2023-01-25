@@ -2,16 +2,19 @@ package dev.prithvis.blogbackend.service.impl;
 
 import dev.prithvis.blogbackend.exceptions.EntityNotFoundException;
 import dev.prithvis.blogbackend.models.Category;
+import dev.prithvis.blogbackend.models.Post;
 import dev.prithvis.blogbackend.payloads.CategoryDTO;
 import dev.prithvis.blogbackend.repository.CategoryRepository;
-import dev.prithvis.blogbackend.service.repo.CategoryService;
-import dev.prithvis.blogbackend.utils.CategoryToDto;
-import dev.prithvis.blogbackend.utils.DTOToCategory;
+import dev.prithvis.blogbackend.service.base.CategoryService;
+import dev.prithvis.blogbackend.utils.converter.CategoryToDto;
+import dev.prithvis.blogbackend.utils.converter.DTOToCategory;
 import dev.prithvis.blogbackend.utils.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -59,5 +62,22 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(int id) {
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public Category getPostCategory(Post post) {
+        Category category=new Category();
+        if(categoryRepository.count()==0){
+            category.setName("Unidentified");
+            categoryRepository.save(category);
+        }
+        long totalCategories=categoryRepository.count();
+        /*
+         * since we don't have and AI algorithm to determine we will for time being
+         * assign any random category
+         */
+        Random random=new SecureRandom();
+        int categoryNumber=(int)random.nextLong(totalCategories);
+        return categoryRepository.findById(categoryNumber).orElse(category);
     }
 }
