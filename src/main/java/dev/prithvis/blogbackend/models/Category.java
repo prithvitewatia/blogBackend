@@ -1,18 +1,20 @@
 package dev.prithvis.blogbackend.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Table
 @Data
 public class Category {
     @Id
-    @Column
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
     @Column(nullable = false,unique = true)
     private String name;
+    @OneToMany(mappedBy = "category")
+    private List<Post> posts=new LinkedList<>();
 }

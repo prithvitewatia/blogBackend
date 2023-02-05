@@ -2,7 +2,7 @@ package dev.prithvis.blogbackend.controller;
 
 import dev.prithvis.blogbackend.models.DataModels;
 import dev.prithvis.blogbackend.payloads.BlogUserDTO;
-import dev.prithvis.blogbackend.service.repo.BlogUserService;
+import dev.prithvis.blogbackend.service.base.BlogUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

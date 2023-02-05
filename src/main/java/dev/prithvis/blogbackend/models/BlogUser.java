@@ -3,6 +3,9 @@ package dev.prithvis.blogbackend.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Entity
 @Table
 @Data
@@ -18,4 +21,6 @@ public class BlogUser {
     private String password;
     @Column
     private String about;
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts=new LinkedList<>();
 }

@@ -1,4 +1,4 @@
-package dev.prithvis.blogbackend.utils;
+package dev.prithvis.blogbackend.utils.converter;
 
 import dev.prithvis.blogbackend.models.BlogUser;
 import dev.prithvis.blogbackend.payloads.BlogUserDTO;
